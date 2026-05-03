@@ -13,4 +13,8 @@ export class HelloService {
     getUserName(name: string): string {
         return `this user name is ${name}`
     }
+
+    welcomeUser(name: string): string {
+        return `Welcome to the nest family ${name}`
+    }
 }
