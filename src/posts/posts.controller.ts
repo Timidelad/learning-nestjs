@@ -1,30 +1,47 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Patch, Post, Put, Query } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import type { Post as PostInterface } from './interfaces/post.interface';
 import { CreatePostDto } from './dto/create-post-dto';
+import { PostExistsPipe } from './pipes/postexists.pipe';
+import { Post as PostEntity } from './entities/post.entity';
+import { UpdatePostDto } from './dto/update-post-dto';
 
 @Controller('posts')
 export class PostsController {
     constructor(private readonly postsService: PostsService) { }
 
+    // get post
     @Get()
-    findAllPosts(@Query('search') search?: string): PostInterface[] {
-        const extractedPosts = this.postsService.findAll();
-
-        if (search) {
-            return extractedPosts.filter(singlePost => singlePost.title.toLowerCase().includes(search.toLowerCase()));
-        }
-        return extractedPosts;
+    async findAll(): Promise<PostEntity[]> {
+        return this.postsService.findAll();
     }
 
-    @Get(':id')
-    findPostById(@Param('id', ParseIntPipe) id: number): PostInterface {
-        return this.postsService.findOneById(id);
-    }
-
+    // create post
     @Post('create')
-    @HttpCode(HttpStatus.CREATED)
-    createPost(@Body() PostData: CreatePostDto): PostInterface {
-        return this.postsService.createPost(PostData)
+    async createNewPost(@Body() newPost: CreatePostDto): Promise<PostEntity> {
+        return this.postsService.createNewPost(newPost)
     }
+
+    // update post
+    @Put('update/:id')
+    async updatePost(@Body() updatePostData: UpdatePostDto, @Param('id', ParseIntPipe) id: number): Promise<PostEntity> {
+        return this.postsService.updatePost(id, updatePostData)
+    }
+
+    // remove post
+    @Delete('delete/:id')
+    async removePost(@Param('id', ParseIntPipe) id: number): Promise<void> {
+        this.postsService.removePost(id)
+    }
+
+    // @Get(':id')
+    // async findPostById(@Param('id', ParseIntPipe, PostExistsPipe) id: number): Promise<PostInterface> {
+    //     return this.postsService.findOneById(id);
+    // }
+
+    // @Post('create')
+    // @HttpCode(HttpStatus.CREATED)
+    // async createPost(@Body() PostData: CreatePostDto): Promise<PostInterface> {
+    //     return this.postsService.createPost(PostData)
+    // }
 }
