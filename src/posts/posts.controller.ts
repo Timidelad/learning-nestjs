@@ -33,15 +33,4 @@ export class PostsController {
     async removePost(@Param('id', ParseIntPipe) id: number): Promise<void> {
         this.postsService.removePost(id)
     }
-
-    // @Get(':id')
-    // async findPostById(@Param('id', ParseIntPipe, PostExistsPipe) id: number): Promise<PostInterface> {
-    //     return this.postsService.findOneById(id);
-    // }
-
-    // @Post('create')
-    // @HttpCode(HttpStatus.CREATED)
-    // async createPost(@Body() PostData: CreatePostDto): Promise<PostInterface> {
-    //     return this.postsService.createPost(PostData)
-    // }
 }
