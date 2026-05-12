@@ -9,6 +9,7 @@ import appConfig from './config/app.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Post } from './posts/entities/post.entity';
 import { AuthModule } from './auth/auth.module';
+import { User } from './auth/entities/user.entity';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { AuthModule } from './auth/auth.module';
       username: 'postgres',
       password: 'postgresqlpassword',
       database: 'learningnestjs',
-      entities: [Post], // entities that i want to use
+      entities: [Post, User], // entities that i want to use
       synchronize: true
     }),
     ConfigModule.forRoot({
