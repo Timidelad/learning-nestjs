@@ -1,6 +1,5 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { Observable } from "rxjs";
 import { userRole } from "../entities/user.entity";
 import { ROLES_KEY } from "../decorators/roles.decorator";
 
@@ -12,7 +11,7 @@ export class RolesGuard implements CanActivate {
         const requiredRoles = this.reflector.getAllAndOverride<userRole[]>(
             ROLES_KEY, [
             context.getHandler(),
-            context.getClass
+            context.getClass()
         ]
         );
 
