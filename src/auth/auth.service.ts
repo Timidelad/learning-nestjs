@@ -13,7 +13,9 @@ export class AuthService {
         @InjectRepository(User)
         private UserRepository: Repository<User>,
         private jwtService: JwtService
-    ) { }
+    ) {
+        bcrypt.hash('1234admin', 10).then(console.log)
+    }
 
     private async hashPassword(password: string): Promise<string> {
         return bcrypt.hash(password, 10)
@@ -87,6 +89,34 @@ export class AuthService {
             name: registerDto.name,
             password: hashedPassword,
             role: userRole.USER
+        });
+
+        const saveUser = await this.UserRepository.save(newlyCreatedUser);
+
+        const { password, ...result } = saveUser;
+
+        return {
+            user: result,
+            message: "user created successfully"
+        }
+    }
+
+    async createAdmin(registerDto: registerDto) {
+        const emailExist = await this.UserRepository.findOne({
+            where: { email: registerDto.email }
+        });
+
+        if (emailExist) {
+            throw new ConflictException('User already exist')
+        }
+
+        const hashedPassword = await this.hashPassword(registerDto.password);
+
+        const newlyCreatedUser = this.UserRepository.create({
+            email: registerDto.email,
+            name: registerDto.name,
+            password: hashedPassword,
+            role: userRole.ADMIN
         });
 
         const saveUser = await this.UserRepository.save(newlyCreatedUser);
